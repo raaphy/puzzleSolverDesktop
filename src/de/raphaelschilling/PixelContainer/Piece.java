@@ -92,59 +92,54 @@ public class Piece {
             float lowestError = Float.MAX_VALUE;
             int id = -1;
             for (int j = 0; j < accuracyBorder.length; j++) {
-                if(accuracyBorder[j] < lowestError) {
+                if (accuracyBorder[j] <= lowestError) {
                     id = j;
                     lowestError = accuracyBorder[j];
                 }
             }
             borderList.get(id).accuracy =1;
             accuracyBorder[id] = Float.MAX_VALUE;
+            int k = id - accuracyBorder.length / 8;
+            for (; k < id + accuracyBorder.length / 8; k++) {
+                accuracyBorder[Math.floorMod(k, accuracyBorder.length)] = Float.MAX_VALUE;
+            }
         }
     }
 
     private float calcEdgeAccuracy(int borderIndex) {
         int widthHalf = pixelMatrix.length/2;
         int heightHalf = pixelMatrix[0].length/2;
-        int edgeDepth = widthHalf/3;
+        int edgeDepth = borderList.size() / 32;
         final int x = borderList.get(borderIndex).x;
         final int y = borderList.get(borderIndex).y;
         float angularBefore = angularBetweenBorderListEntrys(borderIndex, borderIndex - edgeDepth);
         float angularAfter = angularBetweenBorderListEntrys(borderIndex, borderIndex + edgeDepth);
-        if(x < widthHalf) {      //Left
-            if(y < heightHalf) {    //Top
-                if(angularDifference((float)0, angularBefore)>Math.PI/4 ||
-                        angularDifference((float)Math.PI/2, angularAfter)>Math.PI/4) {
-                    return Float.MAX_VALUE;
-                }
-            } else {                //Bottom
-                if(angularDifference((float)Math.PI/2, angularBefore)>Math.PI/4 ||
-                        angularDifference((float)-Math.PI, angularAfter)>Math.PI/4) {
-                    return Float.MAX_VALUE;
-                }
-            }
-        } else {                    //Right
-            if(y < heightHalf) {    //Top
-                if(angularDifference((float) -Math.PI/2, angularBefore)>Math.PI/4 ||
-                        angularDifference(0, angularAfter)>Math.PI/4) {
-                    return Float.MAX_VALUE;
-                }
-            } else {                //Bottom
-                if(angularDifference((float) -Math.PI, angularBefore)>Math.PI/4 ||
-                        angularDifference((float) - Math.PI/2, angularAfter)>Math.PI/4) {
-                    return Float.MAX_VALUE;
-                }
-            }
+        float edgeAngular = (float) Math.abs(angularDifference(angularBefore, angularAfter) - Math.PI / 2);
+        if (edgeAngular > Math.PI / 8) {
+            return Float.MAX_VALUE;
+        }
+        float positionAngular = calcAngularOfVector(x - widthHalf, y - heightHalf);
+        float beforeAngularDrift = angularDifference((float) (positionAngular + 3f / 4f * Math.PI), angularBefore);
+        float afterAngularDrift = angularDifference((float) (positionAngular - 3f / 4f * Math.PI), angularAfter);
+        if (beforeAngularDrift > Math.PI / 4 || afterAngularDrift > Math.PI / 4) {
+            return Float.MAX_VALUE;
         }
         float error = 0;
         for(int i = -1; i >  -edgeDepth; i--) {
             float angular = angularBetweenBorderListEntrys(borderIndex, borderIndex + i);
             error += Math.abs(angularDifference(angular, angularBefore));
+
         }
+        //  if(error/edgeDepth>0.2)
+        //      return Float.MAX_VALUE;
         for(int i = 1; i < edgeDepth;i++) {
             float angular = angularBetweenBorderListEntrys(borderIndex, borderIndex + i);
             error += Math.abs(angularDifference(angular, angularAfter));
+
         }
-        return (float) ((error/edgeDepth)+ Math.abs(angularDifference(angularBefore,angularAfter) - Math.PI/2));
+        // if(error/edgeDepth>0.4)
+        //     return Float.MAX_VALUE;
+        return (float) ((error / edgeDepth) + edgeAngular + beforeAngularDrift + afterAngularDrift);
     }
 
     private float angularBetweenBorderListEntrys(int index1, int index2) {
