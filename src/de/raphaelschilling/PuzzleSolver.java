@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PuzzleSolver {
-    private static final int MIN_PIXEL_PIECE = 250;
+    private static final int MIN_PIXEL_PIECE = 99;
     private int[][] imageArray = null;
     private boolean[][] handeledArray = null;
     private float[] hsbTemp = new float[3];
@@ -85,9 +85,9 @@ public class PuzzleSolver {
         }
     }
     private float colorDifference(float[] hsvCompare1, float[] hsvCompare2) {
-        return Math.abs((hsvCompare1[0] - hsvCompare2[0]) % 1f)*7  +
-                Math.abs((hsvCompare1[1] - hsvCompare2[1]) % 1f)*17f +
-                Math.abs((hsvCompare1[2] - hsvCompare2[2]) % 1f)*5;
+        return (Math.abs(hsvCompare1[0] - hsvCompare2[0]))*7  +
+                (Math.abs(hsvCompare1[1] - hsvCompare2[1]))*17f +
+                (Math.abs(hsvCompare1[2] - hsvCompare2[2]))*5;
     }
 
     public int getB(int x, int y) {

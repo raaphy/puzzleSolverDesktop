@@ -36,9 +36,9 @@ public class Piece {
             }
         }
         for(int i = 0; i< borderList.size(); i++) {
-            if(accuracyBorder[i] <100 ) {
-                result[borderList.get(i)[0]+leftCorner][borderList.get(i)[1] + topCorner] = Color.HSBtoRGB((float) (1),1f, (float) (1- accuracyBorder[i]/3));
-
+            if(true) {
+                result[borderList.get(i)[0]+leftCorner][borderList.get(i)[1] + topCorner] = Color.HSBtoRGB((float) (1),1f, (float) (1- accuracyBorder[i]/5));
+                System.out.println(accuracyBorder[i] + " " + (1  - accuracyBorder[i]/5));
             }
         }
     }
@@ -87,16 +87,14 @@ public class Piece {
     public void markEdges() {
         Edge[] bestEdges = new Edge[4];
         accuracyBorder = new float[borderList.size()];
-
         for (int i = 0; i < borderList.size(); i++) {
             accuracyBorder[i]= calcEdgeAccuracy(i);
             //System.out.println(accuracyBorder[i]);
-
         }
     }
 
     private float calcEdgeAccuracy(int borderIndex) {
-        int edgeDepth = pixelMatrix.length/4;
+        int edgeDepth = pixelMatrix.length/8;
         float error = 0;
         float angularBefore = angularBetweenBorderListEntrys(borderIndex, borderIndex - edgeDepth);
         for(int i = -1; i >  -edgeDepth; i--) {
@@ -108,7 +106,7 @@ public class Piece {
             float angular = angularBetweenBorderListEntrys(borderIndex, borderIndex + i);
             error += Math.abs(angularDifference(angular, angularAfter));
         }
-        return (float) (error/edgeDepth + Math.abs(angularDifference(angularAfter, angularBefore) - Math.PI/2));
+        return (float) (angularDifference(angularBefore,angularAfter)*2 - Math.PI/2 + error/edgeDepth) ;
     }
 
     private float angularBetweenBorderListEntrys(int index1, int index2) {
@@ -129,10 +127,6 @@ public class Piece {
 
 
     private float calcAngularOfVector(int x, int y) {
-        if(x == 0) {
-            return (float) (Math.PI/2);
-        } else {
-            return (float) Math.atan(y/x);
-        }
+        return (float) Math.atan2(x,y);
     }
 }
