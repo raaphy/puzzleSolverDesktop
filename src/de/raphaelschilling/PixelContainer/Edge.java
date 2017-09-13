@@ -13,16 +13,25 @@ public class Edge {
         this.end = end;
     }
 
-    public Edge normalize() {
+    public int[][] normalize() {
         double xDifference = borderPixels.get(end).x - borderPixels.get(start).x;
         double yDifference = borderPixels.get(end).y - borderPixels.get(start).y;
         double originalAngular = Math.atan2(yDifference, xDifference);
-
+        int pixelAmount;
+        if(Math.abs(end -start) > borderPixels.size()/2) {
+            pixelAmount = borderPixels.size() - Math.abs(end-start);
+        } else {
+            pixelAmount = Math.abs(end-start);
+        }
+        int[][] result = new int[pixelAmount][2];
         System.out.println("x: " + borderPixels.get(start).x + " y: " + borderPixels.get(start).y + " originalAngular: " + originalAngular);
 
-        for (int i = start + borderPixels.size(); i <= end + borderPixels.size(); i++) {
-
+        for (int i = 0; i < pixelAmount; i++) {
+            float x = (borderPixels.get((i + start) %  borderPixels.size()).x);
+            float y = (borderPixels.get((i + start) % borderPixels.size()).y);
+            result [i][0] = (int) (x * Math.cos(originalAngular) - y * Math.sin(originalAngular));
+            result [i][1] = (int) (y * Math.cos(originalAngular) - x * Math.sin(originalAngular));
         }
-        return null;
+        return result;
     }
 }

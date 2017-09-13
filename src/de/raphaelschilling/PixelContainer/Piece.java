@@ -2,6 +2,7 @@ package de.raphaelschilling.PixelContainer;
 
 import java.awt.*;
 import java.util.ArrayList;
+
 public class Piece {
     int startXRelative;
     int startYRelative;
@@ -15,9 +16,9 @@ public class Piece {
 
 
     public Piece(PixelQue pixelQue) {
-        int color = Color.HSBtoRGB((float) Math.random(),0.5f,0.5f);
+        int color = Color.HSBtoRGB((float) Math.random(), 0.5f, 0.5f);
         pixelMatrix = new int[pixelQue.rightCorner - pixelQue.leftCorner + 1][pixelQue.bottomCorner - pixelQue.topCorner + 1];
-        for(int i = 0; i < pixelQue.addQueY.size(); i++) {
+        for (int i = 0; i < pixelQue.addQueY.size(); i++) {
             pixelMatrix[pixelQue.addQueX.get(i) - pixelQue.leftCorner][pixelQue.addQueY.get(i) - pixelQue.topCorner] = color;
         }
         startXRelative = pixelQue.startX - pixelQue.leftCorner;
@@ -26,27 +27,29 @@ public class Piece {
         this.leftCorner = pixelQue.leftCorner;
 
     }
+
     public void drawItselfTo(int[][] result) {
-        for(int y = topCorner; y < topCorner + pixelMatrix[0].length; y++) {
+        for (int y = topCorner; y < topCorner + pixelMatrix[0].length; y++) {
             for (int x = leftCorner; x < leftCorner + pixelMatrix.length; x++) {
-                if(pixelMatrix[x-leftCorner][y-topCorner] != 0x00000000) {
-                    result[x][y] = pixelMatrix[x-leftCorner][y-topCorner];
+                if (pixelMatrix[x - leftCorner][y - topCorner] != 0x00000000) {
+                    result[x][y] = pixelMatrix[x - leftCorner][y - topCorner];
                 }
             }
         }
-        for(int i = 0; i< borderList.size(); i++) {
-            if(true) {
-                result[borderList.get(i).x+leftCorner][borderList.get(i).y + topCorner] = Color.HSBtoRGB((float) (1),1f, (float) (borderList.get(i).accuracy));
+        for (int i = 0; i < borderList.size(); i++) {
+            if (true) {
+                result[borderList.get(i).x + leftCorner][borderList.get(i).y + topCorner] = Color.HSBtoRGB((float) (1), 1f, (float) (borderList.get(i).accuracy));
             }
         }
+
     }
 
 
     boolean isPiecePixel(int x, int y) {
-        if(x<0 || x >= pixelMatrix.length || y < 0 || y >= pixelMatrix[0].length) {
+        if (x < 0 || x >= pixelMatrix.length || y < 0 || y >= pixelMatrix[0].length) {
             return false;
         }
-        if(pixelMatrix[x][y] == 0x00000000) {
+        if (pixelMatrix[x][y] == 0x00000000) {
             return false;
         }
         return true;
@@ -60,6 +63,7 @@ public class Piece {
         for (Edge edge : getEdges()) {
             edge.normalize();
         }
+
     }
 
     public Edge[] getEdges() {
