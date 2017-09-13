@@ -25,6 +25,7 @@ public class PuzzleSolver {
         if(imageArray == null) {
             return null;
         }
+        long systemTime = System.currentTimeMillis();
         pieces = new ArrayList<Piece>();
         handeledArray = new boolean[imageArray.length][imageArray[0].length];
         for(int y = 0; y < imageArray[0].length; y++) {
@@ -34,15 +35,15 @@ public class PuzzleSolver {
                 }
             }
         }
-
+        System.out.println(System.currentTimeMillis() - systemTime);
 
         int[][] result = new int[imageArray.length][imageArray[0].length];
         for(Piece piece : pieces) {
-            piece.createEdgeList();
-            piece.markEdges();
+            piece.drawAnalysePictureTo(result);
+            piece.getEdges();
 
-            piece.drawItselfTo(result);
         }
+        System.out.println(System.currentTimeMillis() - systemTime);
         return result;
     }
 
@@ -63,7 +64,7 @@ public class PuzzleSolver {
                if(!handeledArray[currentX][currentY] && isPuzzlePixel(currentX, currentY)) {
                    pixelQue.addPixel(currentX, currentY);
                    handeledArray[currentX][currentY] = true;
-                    pixelList.add(new int[]{currentX-1,currentY});
+                   pixelList.add(new int[]{currentX - 1, currentY});
                    pixelList.add(new int[]{currentX+1,currentY});
                    pixelList.add(new int[]{currentX,currentY-1});
                    pixelList.add(new int[]{currentX,currentY+1});

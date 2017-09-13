@@ -9,12 +9,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 public class GuiMain extends JFrame {
     static String PICTURE_PATH = "./examplePicture/braun500.jpg";
-    private double RESICE_FACTOR = 2;
+    private double RESICE_FACTOR = 1.5;
     private JLabel originalPictureLable;
     private JLabel analyseLable;
 
