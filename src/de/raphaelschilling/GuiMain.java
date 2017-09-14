@@ -12,10 +12,10 @@ import java.io.IOException;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 public class GuiMain extends JFrame {
-    static String PICTURE_PATH = "./examplePicture/braun500.jpg";
-    private double RESICE_FACTOR = 1.5;
-    private JLabel originalPictureLable;
-    private JLabel analyseLable;
+    private static String PICTURE_PATH = "./examplePicture/braun2.jpg";
+    private double RESICE_FACTOR = 0.2;
+    private JLabel originalPictureLabel;
+    private JLabel analyseLabel;
 
     public static void main(String[] args) {
         GuiMain frame = new GuiMain();
@@ -25,11 +25,11 @@ public class GuiMain extends JFrame {
         setProporties();
         drawOriginalPicture(PICTURE_PATH);
         addColorMouseListener();
-        add(analyseLable);
+        add(analyseLabel);
     }
 
     private void addColorMouseListener() {
-        originalPictureLable.addMouseListener(new MouseListener() {
+        originalPictureLabel.addMouseListener(new MouseListener() {
             public boolean isRunning = false;
 
             @Override
@@ -38,9 +38,9 @@ public class GuiMain extends JFrame {
                     return;
                 }
                 isRunning = true;
-                e.translatePoint(originalPictureLable.getX(), originalPictureLable.getY());
+                e.translatePoint(originalPictureLabel.getX(), originalPictureLabel.getY());
                 System.out.println("x: " + e.getX() + " y: " + e.getY());
-                drawAnalysePicture(PICTURE_PATH, (int)(e.getX()/RESICE_FACTOR), (int)(e.getY()/RESICE_FACTOR));
+                drawAnalysePicture((int) (e.getX() / RESICE_FACTOR), (int) (e.getY() / RESICE_FACTOR));
                 isRunning = false;
             }
 
@@ -74,7 +74,7 @@ public class GuiMain extends JFrame {
             }
         }
         Image image = bufferedImage.getScaledInstance((int) (pictureMatrix.length*RESICE_FACTOR), -1, Image.SCALE_FAST);
-        analyseLable.setIcon(new ImageIcon(image));
+        analyseLabel.setIcon(new ImageIcon(image));
 
         pack();
     }
@@ -102,15 +102,15 @@ public class GuiMain extends JFrame {
         try {
             BufferedImage bufferedImage= ImageIO.read(new File(picturePath));
             image = bufferedImage.getScaledInstance((int)(bufferedImage.getWidth()*RESICE_FACTOR), -1, Image.SCALE_FAST);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         if(image != null) {
-            originalPictureLable = new JLabel(new ImageIcon(image));
-            add(originalPictureLable);
+            originalPictureLabel = new JLabel(new ImageIcon(image));
+            add(originalPictureLabel);
         pack();}
     }
 
-    private void drawAnalysePicture(String picturePath, int xPuzzleColor, int yPuzzleColor) {
+    private void drawAnalysePicture(int xPuzzleColor, int yPuzzleColor) {
         PuzzleSolver puzzleSolver = new PuzzleSolver();
         puzzleSolver.setImageArray(arrayFromImage(PICTURE_PATH));
         puzzleSolver.setCoordiatesReferenceColour(xPuzzleColor, yPuzzleColor);
@@ -125,7 +125,7 @@ public class GuiMain extends JFrame {
         setSize(1000, 620);
         setLocation(50, 50);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        analyseLable = new JLabel();
+        analyseLabel = new JLabel();
 
     }
 

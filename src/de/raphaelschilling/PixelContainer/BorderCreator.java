@@ -14,8 +14,8 @@ public class BorderCreator {
                 currentDirection = (currentDirection + 3) % 4;
                 currentX = currentX + piece.STEP_X[currentDirection];
                 currentY = currentY + piece.STEP_Y[currentDirection];
-            } else if (piece.isPiecePixel(currentX + piece.STEP_X[(currentDirection + 0) % 4], currentY + piece.STEP_Y[(currentDirection + 0) % 4])) {
-                currentDirection = (currentDirection + 0) % 4;
+            } else if (piece.isPiecePixel(currentX + piece.STEP_X[(currentDirection) % 4], currentY + piece.STEP_Y[(currentDirection) % 4])) {
+                currentDirection = (currentDirection) % 4;
                 currentX = currentX + piece.STEP_X[currentDirection];
                 currentY = currentY + piece.STEP_Y[currentDirection];
             } else if (piece.isPiecePixel(currentX + piece.STEP_X[(currentDirection + 1) % 4], currentY + piece.STEP_Y[(currentDirection + 1) % 4])) {

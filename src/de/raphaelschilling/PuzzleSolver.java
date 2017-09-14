@@ -1,10 +1,13 @@
 package de.raphaelschilling;
 
+import de.raphaelschilling.PixelContainer.CornerFinder;
+import de.raphaelschilling.PixelContainer.Edge;
 import de.raphaelschilling.PixelContainer.Piece;
 import de.raphaelschilling.PixelContainer.PixelQue;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PuzzleSolver {
@@ -14,6 +17,7 @@ public class PuzzleSolver {
     private float[] hsbTemp = new float[3];
     private float[] puzzleColor = new float[]{0.51666665f,0.22222222f,0.88235295f};
     private ArrayList<Piece> pieces;
+    private int pieceID;
 
     public void setImageArray(int[][] imageArray) {
         this.imageArray = imageArray;
@@ -25,25 +29,36 @@ public class PuzzleSolver {
         if(imageArray == null) {
             return null;
         }
+        pieceID = 0;
         long systemTime = System.currentTimeMillis();
-        pieces = new ArrayList<Piece>();
+        pieces = new ArrayList<>();
         handeledArray = new boolean[imageArray.length][imageArray[0].length];
         for(int y = 0; y < imageArray[0].length; y++) {
             for (int x = 0; x < imageArray.length; x++) {
-                if (handeledArray[x][y] == false && isPuzzlePixel(x, y)) {
+                if (!handeledArray[x][y] && isPuzzlePixel(x, y)) {
                     maskPiece(x, y, MIN_PIXEL_PIECE);
                 }
             }
         }
         System.out.println(System.currentTimeMillis() - systemTime);
 
+        ArrayList<Edge> edges = new ArrayList<>();
         int[][] result = new int[imageArray.length][imageArray[0].length];
-        for(Piece piece : pieces) {
-            piece.drawAnalysePictureTo(result);
-            piece.getEdges();
+        for (Piece piece : pieces) {
+            Collections.addAll(edges, piece.getEdges());
 
         }
+        EdgeMatcher edgeMatcher = new EdgeMatcher(edges);
+        int[] returnValue = new int[2];
+        System.out.println(edgeMatcher.getBestMatch(returnValue));
+        for (int i = 0; i < pieces.size(); i++) {
+            if (returnValue[0] == i || returnValue[1] == i) {
+                pieces.get(i).drawAnalysePictureTo(result);
+
+            }
+        }
         System.out.println(System.currentTimeMillis() - systemTime);
+        System.out.println(CornerFinder.count);
         return result;
     }
 
@@ -73,17 +88,14 @@ public class PuzzleSolver {
 
        }
        if(pixelQue.getPixelAmount() > minPixelPiece) {
-           pieces.add(new Piece(pixelQue));
+           pieceID++;
+           pieces.add(new Piece(pixelQue, pieceID));
            System.out.println(pieces.size());
        }
    }
 
     public boolean isPuzzlePixel(int x, int y) {
-        if(colorDifference(Color.RGBtoHSB(getR(x,y), getG(x,y), getB(x,y), this.hsbTemp),puzzleColor) < 3) {
-            return true;
-        } else {
-            return false;
-        }
+        return colorDifference(Color.RGBtoHSB(getR(x, y), getG(x, y), getB(x, y), this.hsbTemp), puzzleColor) < 3;
     }
     private float colorDifference(float[] hsvCompare1, float[] hsvCompare2) {
         return (Math.abs(hsvCompare1[0] - hsvCompare2[0]))*7  +

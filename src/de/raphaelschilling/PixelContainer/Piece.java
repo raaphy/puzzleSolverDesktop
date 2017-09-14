@@ -13,9 +13,12 @@ public class Piece {
     final int[] STEP_X = {1, 0, -1, 0};
     final int[] STEP_Y = {0, 1, 0, -1};
     private int[] cornerIds = null;
+    private int pieceID;
+    private Edge[] edges = null;
 
 
-    public Piece(PixelQue pixelQue) {
+    public Piece(PixelQue pixelQue, int pieceID) {
+        this.pieceID = pieceID;
         int color = Color.HSBtoRGB((float) Math.random(), 0.5f, 0.5f);
         pixelMatrix = new int[pixelQue.rightCorner - pixelQue.leftCorner + 1][pixelQue.bottomCorner - pixelQue.topCorner + 1];
         for (int i = 0; i < pixelQue.addQueY.size(); i++) {
@@ -36,11 +39,17 @@ public class Piece {
                 }
             }
         }
-        for (int i = 0; i < borderList.size(); i++) {
-            if (true) {
-                result[borderList.get(i).x + leftCorner][borderList.get(i).y + topCorner] = Color.HSBtoRGB((float) (1), 1f, (float) (borderList.get(i).accuracy));
-            }
+        for (BorderPixel aBorderList : borderList) {
+            result[aBorderList.x + leftCorner][aBorderList.y + topCorner] = Color.HSBtoRGB((float) (1), 1f, (float) (aBorderList.accuracy));
         }
+        /*for (Edge edge: edges) {
+            int[][] normalized = edge.normalize();
+            for (int i = 0; i < normalized.length; i++) {
+                result[normalized[i][0] + leftCorner][normalized[i][1] + topCorner] = Color.HSBtoRGB(0.3f,(float)i/normalized.length, 1f);
+            }
+
+        }*/
+
 
     }
 
@@ -57,19 +66,21 @@ public class Piece {
     }
 
     public void drawAnalysePictureTo(int[][] result) {
-        borderList = BorderCreator.createBorderList(this);
-        cornerIds = CornerFinder.findCorners(borderList, pixelMatrix.length, pixelMatrix[0].length);
+
+        getEdges();
         this.drawItselfTo(result);
-        for (Edge edge : getEdges()) {
-            edge.normalize();
-        }
 
     }
 
     public Edge[] getEdges() {
-        Edge[] edges = new Edge[cornerIds.length];
+        borderList = BorderCreator.createBorderList(this);
+        cornerIds = CornerFinder.findCorners(borderList, pixelMatrix.length, pixelMatrix[0].length);
+        if (edges != null) {
+            return edges;
+        }
+        edges = new Edge[cornerIds.length];
         for (int i = 0; i < cornerIds.length; i++) {
-            edges[i] = new Edge(borderList, cornerIds[i], cornerIds[(i + 1) % cornerIds.length]);
+            edges[i] = new Edge(borderList, cornerIds[i], cornerIds[(i + 1) % cornerIds.length], pieceID);
         }
         return edges;
     }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CornerFinder {
+    public static long count = 0;
+
     public static int[] findCorners(ArrayList<BorderPixel> borderList, int matrixWidth, int matrixHeight) {
         float[] accuracyBorder = new float[borderList.size()];
         for (int i = 0; i < borderList.size(); i++) {
@@ -83,6 +85,7 @@ public class CornerFinder {
     }
 
     private static float calcAngularOfVector(int x, int y) {
+        count++;
         return (float) Math.atan2(y, x);
     }
 
