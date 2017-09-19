@@ -51,12 +51,15 @@ public class PuzzleSolver {
         EdgeMatcher edgeMatcher = new EdgeMatcher(edges);
         int[] returnValue = new int[2];
         System.out.println(edgeMatcher.getBestMatch(returnValue));
-        for (int i = 0; i < pieces.size(); i++) {
-            if (returnValue[0] == i || returnValue[1] == i) {
-                pieces.get(i).drawAnalysePictureTo(result);
 
+        for (Piece piece : pieces) {
+            if (piece.pieceID == edges.get(returnValue[1]).pieceID || piece.pieceID == edges.get(returnValue[0]).pieceID) {
+                piece.drawItselfTo(result);
             }
         }
+
+        edges.get(returnValue[0]).drawTo(result, 1f);
+        edges.get(returnValue[1]).drawTo(result, 1f);
         System.out.println(System.currentTimeMillis() - systemTime);
         System.out.println(CornerFinder.count);
         return result;

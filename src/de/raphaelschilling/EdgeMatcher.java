@@ -28,8 +28,8 @@ public class EdgeMatcher {
                 }
             }
         }
-        result[0] = edges.get(bestI).pieceID;
-        result[1] = edges.get(bestJ).pieceID;
+        result[0] = bestI;
+        result[1] = bestJ;
         return "Best Value: " + bestValue + "i: " + bestI + " j: " + bestJ;
     }
 }

@@ -13,7 +13,7 @@ public class Piece {
     final int[] STEP_X = {1, 0, -1, 0};
     final int[] STEP_Y = {0, 1, 0, -1};
     private int[] cornerIds = null;
-    private int pieceID;
+    public int pieceID;
     private Edge[] edges = null;
 
 
@@ -80,7 +80,7 @@ public class Piece {
         }
         edges = new Edge[cornerIds.length];
         for (int i = 0; i < cornerIds.length; i++) {
-            edges[i] = new Edge(borderList, cornerIds[i], cornerIds[(i + 1) % cornerIds.length], pieceID);
+            edges[i] = new Edge(borderList, cornerIds[i], cornerIds[(i + 1) % cornerIds.length], pieceID, leftCorner, topCorner);
         }
         return edges;
     }

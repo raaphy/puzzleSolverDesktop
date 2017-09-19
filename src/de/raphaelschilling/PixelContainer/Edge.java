@@ -1,5 +1,6 @@
 package de.raphaelschilling.PixelContainer;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Edge {
@@ -8,14 +9,18 @@ public class Edge {
     private int end;
     public int pieceID;
     public int complement = -1;
-    private final double MAX_LENGTH_DIFF = 0.1;
+    private final double MAX_LENGTH_DIFF = 3;
     private int[][] normalized = null;
+    private int startY;
+    private int startX;
 
-    public Edge(ArrayList<BorderPixel> borderPixels, int start, int end, int pieceID) {
+    public Edge(ArrayList<BorderPixel> borderPixels, int start, int end, int pieceID, int startX, int startY) {
         this.borderPixels = borderPixels;
         this.start = start;
         this.end = end;
         this.pieceID = pieceID;
+        this.startX = startX;
+        this.startY = startY;
     }
 
     public int[][] normalize() {
@@ -32,8 +37,6 @@ public class Edge {
             pixelAmount = Math.abs(end-start);
         }
         int[][] result = new int[pixelAmount][2];
-        System.out.println("x: " + borderPixels.get(start).x + " y: " + borderPixels.get(start).y + " originalAngular: " + originalAngular);
-
         for (int i = 0; i < pixelAmount; i++) {
             float x = (borderPixels.get((i + start) % borderPixels.size()).x);
             float y = (borderPixels.get((i + start) % borderPixels.size()).y);
@@ -45,11 +48,14 @@ public class Edge {
     }
 
     public float getMatch(Edge other) {
-        if (other.pieceID == this.pieceID || Math.abs(other.borderPixels.size() - borderPixels.size()) > MAX_LENGTH_DIFF * borderPixels.size()) {
+        if (other.pieceID == this.pieceID) {
             return Float.MAX_VALUE;
         }
         int[][] thisNormalized = normalize();
         int[][] otherNormalized = other.normalize();
+        if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
+            return Float.MAX_VALUE;
+        }
         int checkPixelAmount = thisNormalized.length;
         if (thisNormalized.length > otherNormalized.length) {
             checkPixelAmount = otherNormalized.length;
@@ -68,7 +74,27 @@ public class Edge {
             int yDiff = -otherNormalized[checkPixelAmount - i - 1][1] - thisNormalized[i][1] + ySumDiff;
             result += Math.sqrt(((float) xDiff) * xDiff + (float) yDiff * yDiff);
         }
-        result += Math.abs(thisNormalized.length - otherNormalized.length) * thisNormalized.length * 0.2;
+        result = result / checkPixelAmount;
+        result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
         return result;
     }
+
+    public void drawTo(int[][] result, float saturation) {
+        int amount;
+        if (end - start > 0) {
+            amount = end - start;
+        } else {
+            amount = end + borderPixels.size() - start;
+        }
+        for (int i = 0; i < amount; i++) {
+            int currentElement = Math.floorMod(i + start, borderPixels.size());
+            result[borderPixels.get(currentElement).x + startX][borderPixels.get(currentElement).y + startY] = Color.HSBtoRGB(0.2f, saturation, 1f);
+        }
+        int[][] normalized = normalize();
+       /* for (int i = 0; i < normalized.length; i++) {
+
+            result[normalized[i][0]+300][normalized[i][1]+300] = Color.HSBtoRGB(0.7f,saturation, (float)i/amount);
+        }*/
+    }
+
 }
