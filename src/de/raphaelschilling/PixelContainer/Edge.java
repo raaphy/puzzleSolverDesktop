@@ -1,6 +1,5 @@
 package de.raphaelschilling.PixelContainer;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Edge {
@@ -79,7 +78,7 @@ public class Edge {
         return result;
     }
 
-    public void drawTo(int[][] result, float saturation) {
+    public void drawTo(int[][] result, int color) {
         int amount;
         if (end - start > 0) {
             amount = end - start;
@@ -88,13 +87,9 @@ public class Edge {
         }
         for (int i = 0; i < amount; i++) {
             int currentElement = Math.floorMod(i + start, borderPixels.size());
-            result[borderPixels.get(currentElement).x + startX][borderPixels.get(currentElement).y + startY] = Color.HSBtoRGB(0.2f, saturation, 1f);
+            result[borderPixels.get(currentElement).x + startX][borderPixels.get(currentElement).y + startY] = color;
         }
         int[][] normalized = normalize();
-       /* for (int i = 0; i < normalized.length; i++) {
-
-            result[normalized[i][0]+300][normalized[i][1]+300] = Color.HSBtoRGB(0.7f,saturation, (float)i/amount);
-        }*/
     }
 
 }

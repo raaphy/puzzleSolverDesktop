@@ -49,17 +49,14 @@ public class PuzzleSolver {
 
         }
         EdgeMatcher edgeMatcher = new EdgeMatcher(edges);
-        int[] returnValue = new int[2];
-        System.out.println(edgeMatcher.getBestMatch(returnValue));
-
         for (Piece piece : pieces) {
-            if (piece.pieceID == edges.get(returnValue[1]).pieceID || piece.pieceID == edges.get(returnValue[0]).pieceID) {
-                piece.drawItselfTo(result);
-            }
-        }
 
-        edges.get(returnValue[0]).drawTo(result, 1f);
-        edges.get(returnValue[1]).drawTo(result, 1f);
+            piece.drawItselfTo(result);
+        }
+        System.out.println(edgeMatcher.drawMatchesTo(result));
+
+
+
         System.out.println(System.currentTimeMillis() - systemTime);
         System.out.println(CornerFinder.count);
         return result;

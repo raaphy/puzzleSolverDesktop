@@ -19,7 +19,7 @@ public class Piece {
 
     public Piece(PixelQue pixelQue, int pieceID) {
         this.pieceID = pieceID;
-        int color = Color.HSBtoRGB((float) Math.random(), 0.5f, 0.5f);
+        int color = Color.HSBtoRGB((float) 0.5f, 0.5f, 0.5f);
         pixelMatrix = new int[pixelQue.rightCorner - pixelQue.leftCorner + 1][pixelQue.bottomCorner - pixelQue.topCorner + 1];
         for (int i = 0; i < pixelQue.addQueY.size(); i++) {
             pixelMatrix[pixelQue.addQueX.get(i) - pixelQue.leftCorner][pixelQue.addQueY.get(i) - pixelQue.topCorner] = color;
@@ -42,13 +42,6 @@ public class Piece {
         for (BorderPixel aBorderList : borderList) {
             result[aBorderList.x + leftCorner][aBorderList.y + topCorner] = Color.HSBtoRGB((float) (1), 1f, (float) (aBorderList.accuracy));
         }
-        /*for (Edge edge: edges) {
-            int[][] normalized = edge.normalize();
-            for (int i = 0; i < normalized.length; i++) {
-                result[normalized[i][0] + leftCorner][normalized[i][1] + topCorner] = Color.HSBtoRGB(0.3f,(float)i/normalized.length, 1f);
-            }
-
-        }*/
 
 
     }

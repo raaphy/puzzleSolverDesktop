@@ -12,8 +12,8 @@ import java.io.IOException;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 public class GuiMain extends JFrame {
-    private static String PICTURE_PATH = "./examplePicture/braun500.jpg";
-    private double RESICE_FACTOR = 1;
+    private static String PICTURE_PATH = "./examplePicture/braun.jpg";
+    private double RESICE_FACTOR = 0.2;
     private JLabel originalPictureLabel;
     private JLabel analyseLabel;
 
