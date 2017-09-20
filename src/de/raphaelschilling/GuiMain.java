@@ -73,7 +73,7 @@ public class GuiMain extends JFrame {
                 bufferedImage.setRGB(x, y, pictureMatrix[x][y]);
             }
         }
-        Image image = bufferedImage.getScaledInstance((int) (pictureMatrix.length*RESICE_FACTOR), -1, Image.SCALE_FAST);
+        Image image = bufferedImage.getScaledInstance((int) (pictureMatrix.length*RESICE_FACTOR), -1, Image.SCALE_AREA_AVERAGING);
         analyseLabel.setIcon(new ImageIcon(image));
 
         pack();

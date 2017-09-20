@@ -24,8 +24,9 @@ public class EdgeMatcher {
         for (int i = 0; i < edgeMatches.size(); i++) {
 
             int color = Color.HSBtoRGB(hue, (float) i / edgeMatches.size(), (float) i / edgeMatches.size());
-            edges.get(edgeMatches.get(i).bestI).drawTo(drawArea, color);
-            edges.get(edgeMatches.get(i).bestJ).drawTo(drawArea, color);
+            edges.get(edgeMatches.get(i).i).drawTo(drawArea, color);
+            edges.get(edgeMatches.get(i).j).drawTo(drawArea, color);
+            edgeMatches.get(i).drawTo(drawArea, color);
             hue = (float) ((hue + Math.PI / 10) % 1f);
 
         }
@@ -50,14 +51,15 @@ public class EdgeMatcher {
                     }
                 }
             }
+            if (bestI == -1) {
+                break;
+            }
             for (int iJ = 0; iJ < edges.size(); iJ++) {
                 matches[iJ][bestJ] = Float.MAX_VALUE;
                 matches[bestI][iJ] = Float.MAX_VALUE;
             }
-            edgeMatches.add(new EdgeMatch(bestI, bestJ, bestValue));
-            if (bestI == -1) {
-                break;
-            }
+            edgeMatches.add(new EdgeMatch(bestI, bestJ, bestValue, edges));
+
         }
     }
 

@@ -45,6 +45,38 @@ public class Edge {
         normalized = result;
         return result;
     }
+/*
+    public float getMatch(Edge other) {
+        if (other.pieceID == this.pieceID) {
+            return Float.MAX_VALUE;
+        }
+        int[][] thisNormalized = normalize();
+        int[][] otherNormalized = other.normalize();
+        if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
+            return Float.MAX_VALUE;
+        }
+        int checkPixelAmount = thisNormalized.length;
+        if (thisNormalized.length > otherNormalized.length) {
+            checkPixelAmount = otherNormalized.length;
+        }
+        int xSumDiff = 0;
+        int ySumDiff = 0;
+        for (int i = 0; i < checkPixelAmount; i++) {
+            xSumDiff += thisNormalized[i][0] + otherNormalized[checkPixelAmount - i - 1][0];
+            ySumDiff += thisNormalized[i][1] + otherNormalized[checkPixelAmount - i - 1][1];
+        }
+        float result = 0;
+        xSumDiff = (int) ((float) xSumDiff / checkPixelAmount + 0.5f);
+        ySumDiff = (int) ((float) ySumDiff / checkPixelAmount + 0.5f);
+        for (int i = 0; i < checkPixelAmount; i++) {
+            int xDiff = -otherNormalized[checkPixelAmount - i - 1][0] - thisNormalized[i][0] + xSumDiff;
+            int yDiff = -otherNormalized[checkPixelAmount - i - 1][1] - thisNormalized[i][1] + ySumDiff;
+            result += Math.sqrt(((float) xDiff) * xDiff + (float) yDiff * yDiff);
+        }
+        result = result / checkPixelAmount;
+        result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
+        return result;
+    }*/
 
     public float getMatch(Edge other) {
         if (other.pieceID == this.pieceID) {
@@ -89,7 +121,13 @@ public class Edge {
             int currentElement = Math.floorMod(i + start, borderPixels.size());
             result[borderPixels.get(currentElement).x + startX][borderPixels.get(currentElement).y + startY] = color;
         }
-        int[][] normalized = normalize();
     }
 
+    public float getReferenceX() {
+        return borderPixels.get(start).x + startX;
+    }
+
+    public float getReferenceY() {
+        return borderPixels.get(start).y + startY;
+    }
 }

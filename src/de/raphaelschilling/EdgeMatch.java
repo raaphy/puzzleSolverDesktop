@@ -1,13 +1,29 @@
 package de.raphaelschilling;
 
-public class EdgeMatch {
-    public int bestI;
-    public int bestJ;
-    private float bestValue;
+import de.raphaelschilling.PixelContainer.Edge;
 
-    public EdgeMatch(int bestI, int bestJ, float bestValue) {
-        this.bestI = bestI;
-        this.bestJ = bestJ;
+import java.util.ArrayList;
+
+public class EdgeMatch {
+    public int i;
+    public int j;
+    private float bestValue;
+    private ArrayList<Edge> edgeList;
+
+    public EdgeMatch(int i, int j, float bestValue, ArrayList<Edge> edgeList) {
+        this.i = i;
+        this.j = j;
         this.bestValue = bestValue;
+        this.edgeList = edgeList;
+    }
+
+    public void drawTo(int[][] drawArea, int color) {
+        Edge edgeI = edgeList.get(i);
+        Edge edgeJ = edgeList.get(j);
+        float xDiff = edgeI.getReferenceX() - edgeJ.getReferenceX();
+        float yDiff = edgeI.getReferenceY() - edgeJ.getReferenceY();
+        for(int i = 0; i < 100; i++) {
+            drawArea[(int) (edgeJ.getReferenceX() + xDiff *i/100)][(int) (edgeJ.getReferenceY() + yDiff *i/100)] =color;
+        }
     }
 }
