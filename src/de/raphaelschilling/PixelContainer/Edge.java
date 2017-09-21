@@ -91,19 +91,17 @@ public class Edge {
         if (thisNormalized.length > otherNormalized.length) {
             checkPixelAmount = otherNormalized.length;
         }
-        int xSumDiff = 0;
-        int ySumDiff = 0;
-        for (int i = 0; i < checkPixelAmount; i++) {
-            xSumDiff += thisNormalized[i][0] + otherNormalized[checkPixelAmount - i - 1][0];
-            ySumDiff += thisNormalized[i][1] + otherNormalized[checkPixelAmount - i - 1][1];
-        }
+        int lastDiffX = thisNormalized[0][0] + otherNormalized[checkPixelAmount - 1][0];
+        int lastDiffY = thisNormalized[0][1] + otherNormalized[checkPixelAmount - 1][1];
         float result = 0;
-        xSumDiff = (int) ((float) xSumDiff / checkPixelAmount + 0.5f);
-        ySumDiff = (int) ((float) ySumDiff / checkPixelAmount + 0.5f);
-        for (int i = 0; i < checkPixelAmount; i++) {
-            int xDiff = -otherNormalized[checkPixelAmount - i - 1][0] - thisNormalized[i][0] + xSumDiff;
-            int yDiff = -otherNormalized[checkPixelAmount - i - 1][1] - thisNormalized[i][1] + ySumDiff;
-            result += Math.sqrt(((float) xDiff) * xDiff + (float) yDiff * yDiff);
+        for (int i = 1; i < checkPixelAmount; i++) {
+            int xDiff = otherNormalized[checkPixelAmount - i - 1][0] + thisNormalized[i][0];
+            int yDiff = otherNormalized[checkPixelAmount - i - 1][1] + thisNormalized[i][1];
+            int xWrongness = xDiff - lastDiffX;
+            int yWrongness = yDiff - lastDiffY;
+            lastDiffX = xDiff;
+            lastDiffY = yDiff;
+            result += Math.sqrt(((float) xWrongness) * xWrongness + (float) yWrongness * yWrongness);
         }
         result = result / checkPixelAmount;
         result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
