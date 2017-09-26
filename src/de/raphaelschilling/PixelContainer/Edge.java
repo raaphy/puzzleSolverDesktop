@@ -61,16 +61,18 @@ public class Edge {
             return Float.MAX_VALUE;
         }
 
-        float weightXDiff = (getWeightX() + other.getWeightX());
-        float weightYDiff = (getWeightY() + other.getWeightY());
+        float weightXDiff = (getWeightX() - (-other.getWeightX()));
+        float weightYDiff = (getWeightY() - (-other.getWeightY()));
         float result = 0;
         for (int[] position : normalized) {
             int x = position[0];
             int y = position[1];
-            result += other.getDistanceOfNearest(-x - weightXDiff , -y - weightYDiff, otherNormalized);
+            result += getDistanceOfNearest(-(x - weightXDiff ), -(y - weightYDiff), otherNormalized);
         }
         result = result / normalized.length;
-        result += Math.abs(thisNormalized.length - otherNormalized.length) / normalized.length;
+        System.out.print(result);
+        result += Math.abs(thisNormalized.length - otherNormalized.length) / (float)normalized.length* 10;
+        System.out.println(" " + result);
         return result;
     }
 
@@ -89,7 +91,7 @@ public class Edge {
         int ySum = 0;
         normalize();
         for(int[] position : normalized) {
-            ySum = position[1];
+            ySum += position[1];
         }
         return (float)ySum / amount;
 
@@ -161,7 +163,7 @@ public class Edge {
         int xSum = 0;
         normalize();
         for(int[] position : normalized) {
-            xSum = position[0];
+            xSum += position[0];
         }
         return (float)xSum / amount;
     }
