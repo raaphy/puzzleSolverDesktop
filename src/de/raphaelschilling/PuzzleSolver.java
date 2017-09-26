@@ -30,7 +30,6 @@ public class PuzzleSolver {
             return null;
         }
         pieceID = 0;
-        long systemTime = System.currentTimeMillis();
         pieces = new ArrayList<>();
         handeledArray = new boolean[imageArray.length][imageArray[0].length];
         for(int y = 0; y < imageArray[0].length; y++) {
@@ -40,8 +39,6 @@ public class PuzzleSolver {
                 }
             }
         }
-        System.out.println(System.currentTimeMillis() - systemTime);
-
         ArrayList<Edge> edges = new ArrayList<>();
         int[][] result = new int[imageArray.length][imageArray[0].length];
         for (Piece piece : pieces) {
@@ -53,12 +50,10 @@ public class PuzzleSolver {
 
             piece.drawItselfTo(result);
         }
-        System.out.println(edgeMatcher.drawMatchesTo(result));
+        edgeMatcher.drawMatchesTo(result);
 
 
 
-        System.out.println(System.currentTimeMillis() - systemTime);
-        System.out.println(CornerFinder.count);
         return result;
     }
 

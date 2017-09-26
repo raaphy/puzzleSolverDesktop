@@ -7,11 +7,11 @@ public class Edge {
     private int start;
     private int end;
     public int pieceID;
-    public int complement = -1;
     private final double MAX_LENGTH_DIFF = 3;
     private int[][] normalized = null;
     private int startY;
     private int startX;
+    private int amount;
 
     public Edge(ArrayList<BorderPixel> borderPixels, int start, int end, int pieceID, int startX, int startY) {
         this.borderPixels = borderPixels;
@@ -20,6 +20,11 @@ public class Edge {
         this.pieceID = pieceID;
         this.startX = startX;
         this.startY = startY;
+        if (end - start > 0) {
+            amount = end - start;
+        } else {
+            amount = end + borderPixels.size() - start;
+        }
     }
 
     public int[][] normalize() {
@@ -44,6 +49,50 @@ public class Edge {
         }
         normalized = result;
         return result;
+    }
+
+    public float getMatch(Edge other) {
+        if (other.pieceID == this.pieceID) {
+            return Float.MAX_VALUE;
+        }
+        int[][] thisNormalized = normalize();
+        int[][] otherNormalized = other.normalize();
+        if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
+            return Float.MAX_VALUE;
+        }
+
+        float weightXDiff = (getWeightX() + other.getWeightX());
+        float weightYDiff = (getWeightY() + other.getWeightY());
+        float result = 0;
+        for (int[] position : normalized) {
+            int x = position[0];
+            int y = position[1];
+            result += other.getDistanceOfNearest(-x - weightXDiff , -y - weightYDiff, otherNormalized);
+        }
+        result = result / normalized.length;
+        result += Math.abs(thisNormalized.length - otherNormalized.length) / normalized.length;
+        return result;
+    }
+
+    private float getDistanceOfNearest(float x, float y, int[][] smallerNormalized) {
+        float smallestDistance = Float.MAX_VALUE;
+        for(int[] position : smallerNormalized) {
+            float distance = (float) Math.sqrt((x-position[0])*(x-position[0]) + (y-position[1]) * (y-position[1]));
+            if(distance < smallestDistance) {
+                smallestDistance = distance;
+            }
+        }
+        return smallestDistance;
+    }
+
+    private float getWeightY() {
+        int ySum = 0;
+        normalize();
+        for(int[] position : normalized) {
+            ySum = position[1];
+        }
+        return (float)ySum / amount;
+
     }
 /*
     public float getMatch(Edge other) {
@@ -77,7 +126,7 @@ public class Edge {
         result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
         return result;
     }*/
-
+/*
     public float getMatch(Edge other) {
         if (other.pieceID == this.pieceID) {
             return Float.MAX_VALUE;
@@ -106,21 +155,28 @@ public class Edge {
         result = result / checkPixelAmount;
         result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
         return result;
+    }*/
+
+    private float getWeightX() {
+        int xSum = 0;
+        normalize();
+        for(int[] position : normalized) {
+            xSum = position[0];
+        }
+        return (float)xSum / amount;
     }
 
     public void drawTo(int[][] result, int color) {
-        int amount;
-        if (end - start > 0) {
-            amount = end - start;
-        } else {
-            amount = end + borderPixels.size() - start;
-        }
         for (int i = 0; i < amount; i++) {
             int currentElement = Math.floorMod(i + start, borderPixels.size());
             result[borderPixels.get(currentElement).x + startX][borderPixels.get(currentElement).y + startY] = color;
         }
     }
-
+    public void drawNormalizedTo(int [][] result, int color) {
+        for (int i = 0; i < amount; i++) {
+            result[normalized[i][0] + startX][normalized[i][1]+ startY] = color;
+        }
+    }
     public float getReferenceX() {
         return borderPixels.get(start).x + startX;
     }

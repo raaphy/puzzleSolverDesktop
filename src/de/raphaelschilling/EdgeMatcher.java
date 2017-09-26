@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class EdgeMatcher {
 
-    private static final float MAX_MATCH_ACCORDANCE = 200;
+    private static final float MAX_MATCH_ACCORDANCE = Float.MAX_VALUE;
     private ArrayList<Edge> edges;
     private float[][] matches = null;
     private ArrayList<EdgeMatch> edgeMatches = null;
@@ -23,10 +23,13 @@ public class EdgeMatcher {
         float hue = 0;
         for (int i = 0; i < edgeMatches.size(); i++) {
 
-            int color = Color.HSBtoRGB(hue, (float) i / edgeMatches.size(), (float) i / edgeMatches.size());
+            int color = Color.HSBtoRGB(hue, ((float) (edgeMatches.size() -i)) / edgeMatches.size(),
+                    (float) (edgeMatches.size() - i) / edgeMatches.size());
             edges.get(edgeMatches.get(i).i).drawTo(drawArea, color);
             edges.get(edgeMatches.get(i).j).drawTo(drawArea, color);
+
             edgeMatches.get(i).drawTo(drawArea, color);
+
             hue = (float) ((hue + Math.PI / 10) % 1f);
 
         }
@@ -57,6 +60,8 @@ public class EdgeMatcher {
             for (int iJ = 0; iJ < edges.size(); iJ++) {
                 matches[iJ][bestJ] = Float.MAX_VALUE;
                 matches[bestI][iJ] = Float.MAX_VALUE;
+                matches[iJ][bestI] = Float.MAX_VALUE;
+                matches[bestJ][iJ] = Float.MAX_VALUE;
             }
             edgeMatches.add(new EdgeMatch(bestI, bestJ, bestValue, edges));
 
