@@ -8,7 +8,7 @@ public class Edge {
     private int end;
     public int pieceID;
     private final double MAX_LENGTH_DIFF = 3;
-    private int[][] normalized = null;
+    private float[][] normalized = null;
     private int startY;
     private int startX;
     private int amount;
@@ -27,7 +27,7 @@ public class Edge {
         }
     }
 
-    public int[][] normalize() {
+    public float[][] normalize() {
         if (normalized != null) {
             return normalized;
         }
@@ -40,12 +40,12 @@ public class Edge {
         } else {
             pixelAmount = Math.abs(end-start);
         }
-        int[][] result = new int[pixelAmount][2];
+        float[][] result = new float[pixelAmount][2];
         for (int i = 0; i < pixelAmount; i++) {
             float x = (borderPixels.get((i + start) % borderPixels.size()).x);
             float y = (borderPixels.get((i + start) % borderPixels.size()).y);
-            result[i][0] = (int) (x * Math.cos(-originalAngular) - y * Math.sin(-originalAngular));
-            result[i][1] = (int) (y * Math.cos(-originalAngular) + x * Math.sin(-originalAngular));
+            result[i][0] = (float) (x * Math.cos(-originalAngular) - y * Math.sin(-originalAngular));
+            result[i][1] = (float) (y * Math.cos(-originalAngular) + x * Math.sin(-originalAngular));
         }
         normalized = result;
         return result;
@@ -55,8 +55,8 @@ public class Edge {
         if (other.pieceID == this.pieceID) {
             return Float.MAX_VALUE;
         }
-        int[][] thisNormalized = normalize();
-        int[][] otherNormalized = other.normalize();
+        float[][] thisNormalized = normalize();
+        float[][] otherNormalized = other.normalize();
         if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
             return Float.MAX_VALUE;
         }
@@ -64,21 +64,19 @@ public class Edge {
         float weightXDiff = (getWeightX() - (-other.getWeightX()));
         float weightYDiff = (getWeightY() - (-other.getWeightY()));
         float result = 0;
-        for (int[] position : normalized) {
-            int x = position[0];
-            int y = position[1];
+        for (float[] position : normalized) {
+            float x = position[0];
+            float y = position[1];
             result += getDistanceOfNearest(-(x - weightXDiff ), -(y - weightYDiff), otherNormalized);
         }
         result = result / normalized.length;
-        System.out.print(result);
         result += Math.abs(thisNormalized.length - otherNormalized.length) / (float)normalized.length* 10;
-        System.out.println(" " + result);
         return result;
     }
 
-    private float getDistanceOfNearest(float x, float y, int[][] smallerNormalized) {
+    private float getDistanceOfNearest(float x, float y, float[][] smallerNormalized) {
         float smallestDistance = Float.MAX_VALUE;
-        for(int[] position : smallerNormalized) {
+        for(float[] position : smallerNormalized) {
             float distance = (float) Math.sqrt((x-position[0])*(x-position[0]) + (y-position[1]) * (y-position[1]));
             if(distance < smallestDistance) {
                 smallestDistance = distance;
@@ -88,12 +86,13 @@ public class Edge {
     }
 
     private float getWeightY() {
-        int ySum = 0;
+        float ySum = 0;
         normalize();
-        for(int[] position : normalized) {
+        for(float[] position : normalized) {
             ySum += position[1];
         }
-        return (float)ySum / amount;
+        return ySum / amount;
+
 
     }
 /*
@@ -160,12 +159,12 @@ public class Edge {
     }*/
 
     private float getWeightX() {
-        int xSum = 0;
+        float xSum = 0;
         normalize();
-        for(int[] position : normalized) {
+        for(float[] position : normalized) {
             xSum += position[0];
         }
-        return (float)xSum / amount;
+        return xSum / amount;
     }
 
     public void drawTo(int[][] result, int color) {
@@ -176,7 +175,7 @@ public class Edge {
     }
     public void drawNormalizedTo(int [][] result, int color) {
         for (int i = 0; i < amount; i++) {
-            result[normalized[i][0] + startX][normalized[i][1]+ startY] = color;
+            result[(int) (normalized[i][0] + startX)][(int) (normalized[i][1]+ startY)] = color;
         }
     }
     public float getReferenceX() {
