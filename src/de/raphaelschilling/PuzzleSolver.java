@@ -1,6 +1,5 @@
 package de.raphaelschilling;
 
-import de.raphaelschilling.PixelContainer.CornerFinder;
 import de.raphaelschilling.PixelContainer.Edge;
 import de.raphaelschilling.PixelContainer.Piece;
 import de.raphaelschilling.PixelContainer.PixelQue;

@@ -7,7 +7,7 @@ public class Edge {
     private int start;
     private int end;
     public int pieceID;
-    private final double MAX_LENGTH_DIFF = 3;
+    private final double MAX_LENGTH_DIFF = 1.5;
     private float[][] normalized = null;
     private int startY;
     private int startX;
@@ -51,23 +51,34 @@ public class Edge {
         return result;
     }
 
-    public float getMatch(Edge other) {
+    public float getMatchFloat(Edge other) {
         if (other.pieceID == this.pieceID) {
             return Float.MAX_VALUE;
         }
+        if(other == this) {
+        	return Float.MAX_VALUE;
+        }
         float[][] thisNormalized = normalize();
         float[][] otherNormalized = other.normalize();
-        if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
+        if (otherNormalized.length > thisNormalized.length * MAX_LENGTH_DIFF || thisNormalized.length > otherNormalized.length * MAX_LENGTH_DIFF) {
             return Float.MAX_VALUE;
         }
 
         float weightXDiff = (getWeightX() - (-other.getWeightX()));
         float weightYDiff = (getWeightY() - (-other.getWeightY()));
         float result = 0;
-        for (float[] position : normalized) {
-            float x = position[0];
-            float y = position[1];
-            result += getDistanceOfNearest(-(x - weightXDiff ), -(y - weightYDiff), otherNormalized);
+        for (int i = 0; i < normalized.length; i++) {
+            float x = normalized[i][0];
+            float y = normalized[i][1];
+            float additionalError= (float) Math.pow(getDistanceOfNearest(-(x - weightXDiff ), -(y - weightYDiff), otherNormalized),3f);
+            result += additionalError;
+            if(additionalError > 4000) {
+            	return Float.MAX_VALUE;
+            }
+            if(i > normalized.length/10 && result/ (i+1) > 500) {
+            	return Float.MAX_VALUE;
+            }
+            
         }
         result = result / normalized.length;
         result += Math.abs(thisNormalized.length - otherNormalized.length) / (float)normalized.length* 10;
@@ -95,13 +106,13 @@ public class Edge {
 
 
     }
-/*
-    public float getMatch(Edge other) {
+
+    public float getMatch1(Edge other) {
         if (other.pieceID == this.pieceID) {
             return Float.MAX_VALUE;
         }
-        int[][] thisNormalized = normalize();
-        int[][] otherNormalized = other.normalize();
+        float[][] thisNormalized = normalize();
+        float[][] otherNormalized = other.normalize();
         if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
             return Float.MAX_VALUE;
         }
@@ -119,21 +130,21 @@ public class Edge {
         xSumDiff = (int) ((float) xSumDiff / checkPixelAmount + 0.5f);
         ySumDiff = (int) ((float) ySumDiff / checkPixelAmount + 0.5f);
         for (int i = 0; i < checkPixelAmount; i++) {
-            int xDiff = -otherNormalized[checkPixelAmount - i - 1][0] - thisNormalized[i][0] + xSumDiff;
-            int yDiff = -otherNormalized[checkPixelAmount - i - 1][1] - thisNormalized[i][1] + ySumDiff;
+            int xDiff = (int) (-otherNormalized[checkPixelAmount - i - 1][0] - thisNormalized[i][0] + xSumDiff);
+            int yDiff = (int) (-otherNormalized[checkPixelAmount - i - 1][1] - thisNormalized[i][1] + ySumDiff);
             result += Math.sqrt(((float) xDiff) * xDiff + (float) yDiff * yDiff);
         }
         result = result / checkPixelAmount;
         result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
         return result;
-    }*/
-/*
+    }
+
     public float getMatch(Edge other) {
         if (other.pieceID == this.pieceID) {
             return Float.MAX_VALUE;
         }
-        int[][] thisNormalized = normalize();
-        int[][] otherNormalized = other.normalize();
+        float[][] thisNormalized = normalize();
+        float[][] otherNormalized = other.normalize();
         if (Math.abs(otherNormalized.length - thisNormalized.length) > otherNormalized.length * MAX_LENGTH_DIFF) {
             return Float.MAX_VALUE;
         }
@@ -141,12 +152,12 @@ public class Edge {
         if (thisNormalized.length > otherNormalized.length) {
             checkPixelAmount = otherNormalized.length;
         }
-        int lastDiffX = thisNormalized[0][0] + otherNormalized[checkPixelAmount - 1][0];
-        int lastDiffY = thisNormalized[0][1] + otherNormalized[checkPixelAmount - 1][1];
+        int lastDiffX = (int) (thisNormalized[0][0] + otherNormalized[checkPixelAmount - 1][0]);
+        int lastDiffY = (int) (thisNormalized[0][1] + otherNormalized[checkPixelAmount - 1][1]);
         float result = 0;
         for (int i = 1; i < checkPixelAmount; i++) {
-            int xDiff = otherNormalized[checkPixelAmount - i - 1][0] + thisNormalized[i][0];
-            int yDiff = otherNormalized[checkPixelAmount - i - 1][1] + thisNormalized[i][1];
+            int xDiff = (int) (otherNormalized[checkPixelAmount - i - 1][0] + thisNormalized[i][0]);
+            int yDiff = (int) (otherNormalized[checkPixelAmount - i - 1][1] + thisNormalized[i][1]);
             int xWrongness = xDiff - lastDiffX;
             int yWrongness = yDiff - lastDiffY;
             lastDiffX = xDiff;
@@ -156,7 +167,7 @@ public class Edge {
         result = result / checkPixelAmount;
         result += Math.abs(thisNormalized.length - otherNormalized.length) / checkPixelAmount * 1;
         return result;
-    }*/
+    }
 
     private float getWeightX() {
         float xSum = 0;

@@ -24,7 +24,7 @@ public class EdgeMatcher {
         for (int i = 0; i < edgeMatches.size(); i++) {
 
             int color = Color.HSBtoRGB(hue, ((float) (edgeMatches.size() -i)) / edgeMatches.size(),
-                    (float) (edgeMatches.size() - i) / edgeMatches.size());
+                    1f);
             edges.get(edgeMatches.get(i).i).drawTo(drawArea, color);
             edges.get(edgeMatches.get(i).j).drawTo(drawArea, color);
 
@@ -46,7 +46,7 @@ public class EdgeMatcher {
             int bestI = -1;
             int bestJ = -1;
             for (int i = 0; i < edges.size(); i++) {
-                for (int j = 0; j < edges.size(); j++) {
+                for (int j = i + 1; j < edges.size(); j++) {
                     if (matches[i][j] < bestValue) {
                         bestValue = matches[i][j];
                         bestI = i;
@@ -71,8 +71,8 @@ public class EdgeMatcher {
     private void calcAccordance() {
         matches = new float[edges.size()][edges.size()];
         for (int i = 0; i < edges.size(); i++) {
-            for (int j = 0; j < edges.size(); j++) {
-                matches[i][j] = edges.get(i).getMatch(edges.get(j));
+            for (int j = i + 1; j < edges.size(); j++) {
+                matches[i][j] = edges.get(i).getMatchFloat(edges.get(j));
             }
         }
     }
