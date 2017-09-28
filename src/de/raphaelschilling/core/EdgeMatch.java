@@ -1,8 +1,8 @@
-package de.raphaelschilling;
-
-import de.raphaelschilling.PixelContainer.Edge;
+package de.raphaelschilling.core;
 
 import java.util.ArrayList;
+
+import de.raphaelschilling.core.PixelContainer.Edge;
 
 public class EdgeMatch {
     public int i;
@@ -15,6 +15,7 @@ public class EdgeMatch {
         this.j = j;
         this.bestValue = bestValue;
         this.edgeList = edgeList;
+        System.out.println(bestValue);
     }
 
     public void drawTo(int[][] drawArea, int color) {

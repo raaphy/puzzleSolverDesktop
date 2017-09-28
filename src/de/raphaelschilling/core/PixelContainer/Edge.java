@@ -1,4 +1,4 @@
-package de.raphaelschilling.PixelContainer;
+package de.raphaelschilling.core.PixelContainer;
 
 import java.util.ArrayList;
 
@@ -70,14 +70,16 @@ public class Edge {
         for (int i = 0; i < normalized.length; i++) {
             float x = normalized[i][0];
             float y = normalized[i][1];
-            float additionalError= (float) Math.pow(getDistanceOfNearest(-(x - weightXDiff ), -(y - weightYDiff), otherNormalized),3f);
-            result += additionalError;
-            if(additionalError > 4000) {
+            float additionalPlainError= getDistanceOfNearest(-(x - weightXDiff ), -(y - weightYDiff), otherNormalized);
+            
+            if(additionalPlainError > 20) {
             	return Float.MAX_VALUE;
             }
+            result += Math.pow(additionalPlainError, 3d);
             if(i > normalized.length/10 && result/ (i+1) > 500) {
             	return Float.MAX_VALUE;
             }
+            System.out.println(x);
             
         }
         result = result / normalized.length;

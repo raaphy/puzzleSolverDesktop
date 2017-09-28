@@ -1,9 +1,9 @@
-package de.raphaelschilling;
-
-import de.raphaelschilling.PixelContainer.Edge;
+package de.raphaelschilling.core;
 
 import java.awt.*;
 import java.util.ArrayList;
+
+import de.raphaelschilling.core.PixelContainer.Edge;
 
 public class EdgeMatcher {
 

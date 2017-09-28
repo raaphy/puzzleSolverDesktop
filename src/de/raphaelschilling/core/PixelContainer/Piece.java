@@ -1,4 +1,4 @@
-package de.raphaelschilling.PixelContainer;
+package de.raphaelschilling.core.PixelContainer;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -1,13 +1,13 @@
-package de.raphaelschilling;
-
-import de.raphaelschilling.PixelContainer.Edge;
-import de.raphaelschilling.PixelContainer.Piece;
-import de.raphaelschilling.PixelContainer.PixelQue;
+package de.raphaelschilling.core;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import de.raphaelschilling.core.PixelContainer.Edge;
+import de.raphaelschilling.core.PixelContainer.Piece;
+import de.raphaelschilling.core.PixelContainer.PixelQue;
 
 public class PuzzleSolver {
     private static final int MIN_PIXEL_PIECE = 99;

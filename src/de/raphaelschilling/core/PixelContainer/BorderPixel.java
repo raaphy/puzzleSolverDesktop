@@ -1,4 +1,4 @@
-package de.raphaelschilling.PixelContainer;
+package de.raphaelschilling.core.PixelContainer;
 
 public class BorderPixel {
     private final int id;
